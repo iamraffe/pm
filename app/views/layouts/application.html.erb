@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pm</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+
+<%= yield %>
+    <script type="text/javascript">
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Date');
+      data.addColumn('number', "LDL");
+      data.addColumn('number', "Triglycerides");
+      data.addColumn('number', "HDL");
+      data.addColumn('number', "LDL");
+      data.addColumn('number', "Triglycerides");
+      data.addColumn('number', "HDL");
+      data.addRows([
+        ['12/05/2013', 143, 195, 56, 143, 195, 56],
+        ['05/20/2014', 198, 167, 94, 198, 167, 94],
+        ['01/12/2015', 136, 128, 80, 136, 128, 80],
+        ['10/15/2015', 108, 134, 75, 108, 134, 75]
+      ]);
+      // var data = new google.visualization.arrayToDataTable([
+      //   ['Date', 'LDL', 'Triglycerides', 'HDL'],
+      //   ['12/05/2013', 143, 195, 56, 143, 195, 56],
+      //   ['05/20/2014', 198, 167, 94, 198, 167, 94],
+      //   ['01/12/2015', 136, 128, 80, 136, 128, 80],
+      //   ['10/15/2015', 108, 134, 75, 108, 134, 75]
+      // ]);
+
+      var options = {
+        legend: 'none',
+        pointSize: 3,
+        // colors: ['#760946'],
+        // lineWidth: 4,
+        vAxis: { gridlines: { count: 4 } },
+        series: {
+            0: { color: '#68C49A' },
+            1: { color: '#68C49A' },
+            2: { color: '#68C49A' },
+            3: { color: '#474D92', lineWidth: 0},
+            4: { color: '#474D92', lineWidth: 0},
+            5: { color: '#474D92', lineWidth: 0}
+        }
+      };
+
+      function placeMarker(dataTable) {
+        var cli = this.getChartLayoutInterface();
+        var chartArea = cli.getChartAreaBoundingBox();
+        // "Zombies" is element #5.
+        // document.querySelector('.overlay-treatment').style.bottom = 0;
+        document.querySelector('.overlay-treatment').style.top = chartArea.top + "px";
+        document.querySelector('.overlay-treatment').style.left = Math.floor(cli.getXLocation(1)) + 10 + "px";
+        document.querySelector('.overlay-treatment').style.width = Math.floor(cli.getXLocation(2)) - Math.floor(cli.getXLocation(1)) + 10 + "px";
+        document.querySelector('.overlay-treatment').style.height = Math.floor(chartArea.height) + "px";
+        console.log(Math.floor(cli.getXLocation(3)) - Math.floor(cli.getXLocation(2)));
+        console.log(chartArea.height);
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('line-chart-marker'));
+      google.visualization.events.addListener(chart, 'ready',
+        placeMarker.bind(chart, data));
+      chart.draw(data, options);
+    }
+    </script>
+</body>
+</html>
